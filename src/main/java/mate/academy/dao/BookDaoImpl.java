@@ -73,7 +73,7 @@ public class BookDaoImpl implements BookDao {
                     PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery(sql);
             List<Book> books = new ArrayList<>();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Book book = new Book();
                 book.setId(resultSet.getLong("id"));
                 book.setTitle(resultSet.getString("title"));
