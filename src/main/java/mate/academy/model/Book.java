@@ -1,14 +1,10 @@
 package mate.academy.model;
 
 import java.math.BigDecimal;
-import mate.academy.lib.Dao;
 
 public class Book {
-    @Dao
     private Long id;
-    @Dao
     private String title;
-    @Dao
     private BigDecimal price;
 
     public Long getId() {

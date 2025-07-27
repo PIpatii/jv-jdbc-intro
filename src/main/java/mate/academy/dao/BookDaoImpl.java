@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import mate.academy.ConnectionUtil;
@@ -17,7 +18,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book create(Book book) {
-        String sql = "INSERT INTO books (titel, price) VALUES (?, ?)";
+        String sql = "INSERT INTO books (title, price) VALUES (?, ?)";
 
         try (Connection connection = ConnectionUtil.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql,
@@ -37,7 +38,7 @@ public class BookDaoImpl implements BookDao {
             }
 
         } catch (SQLException e) {
-            throw new DataProcessingException("Can not add new book " + book, e);
+            throw new DataProcessingException("Cannot add new book " + book, e);
         }
         return book;
     }
@@ -53,13 +54,13 @@ public class BookDaoImpl implements BookDao {
             if (resultSet.next()) {
                 Book book = new Book();
                 book.setId(id);
-                book.setTitle(resultSet.getString("titel"));
+                book.setTitle(resultSet.getString("title"));
                 book.setPrice(resultSet.getBigDecimal("price"));
                 return Optional.of(book);
 
             }
         } catch (SQLException e) {
-            throw new DataProcessingException("Can not creat a connection to the DB", e);
+            throw new DataProcessingException("Cannot creat a connection to the DB", e);
         }
         return Optional.empty();
     }
@@ -69,25 +70,25 @@ public class BookDaoImpl implements BookDao {
         String sql = "SELECT * FROM books";
 
         try (Connection connection = ConnectionUtil.getConnection();
-                    Statement statement = connection.prepareStatement(sql)) {
+                    PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery(sql);
-            if (resultSet.next()) {
+            List<Book> books = new ArrayList<>();
+            while(resultSet.next()) {
                 Book book = new Book();
                 book.setId(resultSet.getLong("id"));
-                book.setTitle(resultSet.getString("titel"));
+                book.setTitle(resultSet.getString("title"));
                 book.setPrice(resultSet.getBigDecimal("price"));
-                return List.of(book);
-
+                books.add(book);
             }
+            return books;
         } catch (SQLException e) {
-            throw new DataProcessingException("Can not creat a connection to the DB", e);
+            throw new DataProcessingException("Cannot creat a connection to the DB", e);
         }
-        return List.of();
     }
 
     @Override
     public Book update(Book book) {
-        String sql = "UPDATE books SET titel = ?, price = ? WHERE id = ?";
+        String sql = "UPDATE books SET title = ?, price = ? WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection();
                     PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(3, book.getId());
