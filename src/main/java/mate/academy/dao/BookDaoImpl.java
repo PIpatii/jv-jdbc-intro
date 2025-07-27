@@ -71,7 +71,7 @@ public class BookDaoImpl implements BookDao {
 
         try (Connection connection = ConnectionUtil.getConnection();
                     PreparedStatement statement = connection.prepareStatement(sql)) {
-            ResultSet resultSet = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery();
             List<Book> books = new ArrayList<>();
             while (resultSet.next()) {
                 Book book = new Book();
@@ -91,9 +91,9 @@ public class BookDaoImpl implements BookDao {
         String sql = "UPDATE books SET title = ?, price = ? WHERE id = ?";
         try (Connection connection = ConnectionUtil.getConnection();
                     PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(3, book.getId());
             statement.setString(1, book.getTitle());
             statement.setBigDecimal(2, book.getPrice());
+            statement.setLong(3, book.getId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows > 0) {
